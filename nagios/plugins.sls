@@ -2,4 +2,4 @@
 
 nagios-plugins:
   pkg.installed:
-    - name: {{ nagios.plugins }}
+    - pkgs: {{ nagios.plugins }}
