@@ -44,11 +44,12 @@ clear decommissioned {{ check_name }} nrpe command:
     - name: {{ nrpe.cfg_dir }}/{{ check_name }}.cfg
 {% else %}
 {% if 'plugin_file' in check_def['plugin'] %} {# skip checks that are non-NRPE, aka remote checks #}
+{% set sudo = "sudo " if check_def['plugin'].get('sudo', False) else "" %}
 {{ check_name }} nrpe command definition:
   file.managed:
     - name: {{ nrpe.cfg_dir }}/{{ check_name }}.cfg
     - contents: |
-        command[{{ check_name }}]={{ nrpe.plugin_dir }}/{{ check_def['plugin']['plugin_file'] }} {{ check_def['plugin'].get('plugin_args', "") }}
+        command[{{ check_name }}]={{ sudo }}{{ nrpe.plugin_dir }}/{{ check_def['plugin']['plugin_file'] }} {{ check_def['plugin'].get('plugin_args', "") }}
     - require:
       - pkg: nrpe-plugin-package
       - file: {{ nrpe.cfg_dir }}
